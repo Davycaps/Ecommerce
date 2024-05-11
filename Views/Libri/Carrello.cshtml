@@ -1,0 +1,33 @@
+@model List<Libri>
+@{
+    ViewData["Title"] = "Carrello";
+}
+<h1>Carrello</h1>
+@if (Model == null || !Model.Any())
+{
+    <p>Il carrello è vuoto.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titolo</th>
+                <th>Data di pubblicazione</th>
+                <th>Genere</th>
+                <th>Prezzo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var libro in Model)
+            {
+                <tr>
+                    <td>@libro.Title</td>
+                    <td>@libro.ReleaseDate.ToString("dd/MM/yyyy")</td>
+                    <td>@libro.Genre</td>
+                    <td>@libro.Price.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,16 @@
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@model ECommerce.Models.Utente;
+@{
+    ViewData["Title"] = "Login";
+}
+<form asp-controller="Utenti" asp-action="RegRiuscito" method="post">
+    Username:
+    <input type="text" asp-for="Username" name="Username"><br>
+    Password:
+    <input type="password" asp-for="Password" name="Password"><br>
+    <input type="submit" name="Login">
+    <input type="reset" name="Annulla"><br>
+    Registrati
+    <a asp-controller="Utenti" asp-action="Registrati">qui!</a>
+</form>
