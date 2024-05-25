@@ -1,4 +1,6 @@
 @model IEnumerable<ECommerce.Models.Utente>
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Index";
