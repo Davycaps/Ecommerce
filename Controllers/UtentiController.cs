@@ -167,71 +167,42 @@ namespace ECommerce.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registrati(string username, string password, bool rememberMe)
+        public async Task<IActionResult> Registrati([Bind("Id,Nome,Cognome,Username,Password,Tipo")] Utente utente)
         {
-           if (username == "admin" && password == "password")
+            if (ModelState.IsValid)
             {
-
-                HttpContext.Session.SetString("LoggedIn", "true");
-                
-                return RedirectToAction("LoggedIn");
+                _context.Add(utente);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                ViewBag.ErrorMessage = "Username o password non validi.";
-                return View();
-            }
+            return View(utente);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string username, string password)
+        public Task<IActionResult> Login( Utente user)
         {
+            foreach(var i in _context.Utente)
+            {    
+                if (i.Username == user.Username && i.Password==user.Password)
+                {
+                    HttpContext.Session.SetString("Username", user.Username);
+                    HttpContext.Session.SetString("Login", "si");
+                    return Task.FromResult<IActionResult>(RedirectToAction("Index","Home"));
+                }
             
-            if (username == "admin" && password == "password")
-            {
+            }
 
-                HttpContext.Session.SetString("LoggedIn", "true");
-                
-                return RedirectToAction("LoggedIn");
-            }
-            else
-            {
-                ViewBag.ErrorMessage = "Username o password non validi.";
-                return View();
-            }
+                ModelState.AddModelError("", "Credenziali non valide");
+                return Task.FromResult<IActionResult>(View());
         }
-
-        public IActionResult LoggedIn()
-        {
-
-            if (HttpContext.Session.GetString("LoggedIn") == "true")
-            {
-
-                return View();
-            }
-            else
-            {
-
-                return RedirectToAction("Registrati");
-            }
-        }
-
         public IActionResult Logout()
         {
-            try
-                {
-                    HttpContext.Session.Remove("LoggedIn");
-                    TempData["Message"] = "Logout eseguito con successo.";
-                }
-                catch (Exception ex)
-                {
-
-                    TempData["ErrorMessage"] = "Si è verificato un errore durante il logout.";
-                }
-
-            return RedirectToAction(nameof(Registrati));
+            HttpContext.Session.SetString("Username","");
+            HttpContext.Session.SetString("Login", "no");
+            return RedirectToAction("Index","Home");
         }
+
 
         [HttpPost]
         public IActionResult RegRiuscito(Utente u)
